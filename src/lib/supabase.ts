@@ -12,10 +12,13 @@ const configuredSupabaseEndpointUrl: string =
     : 'https://placeholder.supabase.co';
 
 const configuredSupabaseAnonymousKey: string =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-  !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('your-anon-key')
-    ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    : 'placeholder-anon-key';
+  (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
+    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.includes('your-anon-key'))
+    ? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    : (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+       !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('your-anon-key'))
+      ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      : 'placeholder-anon-key';
 
 /**
  * Standard browser-accessible Supabase client instance.
@@ -33,6 +36,7 @@ export const supabasePublicClient: SupabaseClient = createClient(
 export function getSupabaseServerAdministrativeClient(): SupabaseClient {
   const administrativeServiceRoleKey: string =
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     'placeholder-service-key';
 
